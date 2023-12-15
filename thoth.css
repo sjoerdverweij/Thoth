@@ -1,0 +1,49 @@
+﻿.thoth {
+  display: inline-block;
+  position: relative;
+  cursor: help;
+  z-index: 97;
+}
+
+  .thoth::before {
+    content: " ";
+    display: block;
+    height: 1.0em;
+    width: 100%;
+    position: absolute;
+    opacity: 0.25;
+    background: #ffd500;
+    z-index: 98;
+    border-radius: 10%;
+    padding: 3px;
+  }
+
+.thoth-popup {
+  position: absolute;
+  z-index: 99;
+  display: none;
+  top: 0px;
+  left: 0px;
+  min-height: 50px;
+  min-width: 100px;
+  background: #ff0000;
+  font-family: "Segoe UI", Helvetica, sans-serif;
+  font-size: 8pt;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.thoth-all-units-list-nav {
+  text-align: left;
+  background: #00ff00;
+  height: 100px;
+  width: 100%;
+}
+
+.thoth-all-units-list-nav-ul {
+  align-content: left;
+  overflow: hidden;
+  background: #0000ff;
+  overflow-y: scroll;
+}

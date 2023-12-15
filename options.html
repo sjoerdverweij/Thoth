@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Thoth options</title>
+    <!-- I cannot believe I have to do this. 100 versions in, and Google still can't be bothered to
+         apply a sane default style? Absolutely pitiful. -->
+    <style>
+      body {
+        font-family: "Segoe UI", Helvetica, sans-serif;
+        font-size: 10pt;
+        margin: 25px;
+      }
+      select {
+        font-family: "Segoe UI", Helvetica, sans-serif;
+        font-size: 10pt;
+        margin-bottom: 15px;
+      }
+      input {
+        vertical-align: baseline;
+        margin-bottom: 15px;
+        margin-left: 0px;
+      }
+      button {
+        font-family: "Segoe UI", Helvetica, sans-serif;
+        font-size: 10pt;
+        margin: 5px 5px 20px 20px;
+        padding: 5px 20px 5px 20px;
+      }
+    </style>
+</head>
+<body>
+  Assume ambiguous units on the page are
+  <select id="assumeImperial">
+    <option value="true">Imperial</option>
+    <option value="false">Metric</option>
+  </select>
+  <br />
+  Convert values to
+  <select id="toImperial">
+    <option value="true">Imperial</option>
+    <option value="false">Metric</option>
+  </select>
+  <br />
+  <input id="addOtherSystem" type="checkbox" />Add other unit system (in parentheses)
+  <br />
+  <input id="highlight" type="checkbox" />Highlight substituted values
+  <br />
+  <input id="showPopup" type="checkbox" />Show tooltip
+  <br />
+
+  <div id="status">&nbsp;</div>
+  <div style="float: right"><button id="save">Save</button></div>
+
+  <script src="options.js"></script>
+</body>
+</html>
