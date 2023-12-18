@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Thoth",
+  "version": "1.0",
+  "description": "Convert unit measurements, but properly this time.",
+
+  "icons": {
+    "16": "images/thoth16.png",
+    "32": "images/thoth32.png",
+    "48": "images/thoth48.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "js": [ "content.js" ],
+      "css": [ "thoth.css" ],
+      "matches": [ "<all_urls>" ],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "thoth-popup.js" ],
+      "matches": [ "<all_urls>" ]
+    }
+  ],
+  "permissions": [
+    "storage"
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  }
+}
