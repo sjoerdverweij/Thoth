@@ -26,23 +26,23 @@
   left: 0px;
   min-height: 50px;
   min-width: 100px;
-  background: #ff0000;
+  background: #cccccc;
   font-family: "Segoe UI", Helvetica, sans-serif;
   font-size: 8pt;
-  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.3);
   padding: 5px;
   border-radius: 3px;
 }
 
 .thoth-all-units-list-nav {
   text-align: left;
-  background: #00ff00;
+  background-color: #cccccc;
   height: 100px;
   width: 100%;
 }
 
 .thoth-all-units-list-nav-ul {
-  align-content: left;
+  justify-content: left;
   overflow: hidden;
   background: #0000ff;
   overflow-y: scroll;

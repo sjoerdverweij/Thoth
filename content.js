@@ -166,7 +166,7 @@ function processPage() {
   var thothPopupElement = document.createElement('div');
   var popupHtml = '<span id="thoth-original">&nbsp;</span><br />' +
     '<nav class="thoth-all-units-list-nav">' +
-    '<ul id="thoth-all-units" class="thoth-all-units-nav-ul">' +
+    //'<ul id="thoth-all-units" class="thoth-all-units-nav-ul">' +
     '</ul>' + 
     '</nav>';
   thothPopupElement.innerHTML = popupHtml;
