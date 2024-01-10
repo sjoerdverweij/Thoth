@@ -109,6 +109,9 @@ function processPage() {
                 const suffixTwo = html.substring(suffixStart, p);
                 const suffixTwoEnd = p;
 
+                // TODO: eat any conversions the source gives us "1lb (907g)"
+                // END TODO
+
                 if (suffixOne.length > 0) {
                   var sourceUnit = units[suffixTwo];
                   var replaceEnd = suffixTwoEnd;
