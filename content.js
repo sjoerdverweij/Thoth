@@ -31,6 +31,14 @@ async function loadOptions() {
   });
 }
 
+// This is where the magic happens.
+// NOTE: This is very, very intentionally written as a dopey one-way state loop, rather than using regular expressions.
+//    1. I don't want to hit the input with a regex for every possible notation (it would be CPU murder);
+//    2. I do not know how to write a regex that takes care of all the wacky special cases. If you do, congratulations.
+//       Do not submit a PR for it, I will reject it. At some point, I might want to debug this. If you take
+//       this as a challenge to write a regex for this, please, please, please don't, because the special-casing for all 
+//       the weird outliers on how people use measurements in English will get much, much worse. Please don't stroke out.
+
 function processPage() {
   const textElements = document.querySelectorAll('h1, h2, h3, h4, h5, p, li, td, caption, span');
 
@@ -41,14 +49,18 @@ function processPage() {
     var changedSomething = false;
 
     while (p < html.length) {
-      // Skip HTML tags
-      if (html[p] == '<') {
-        while (p < html.length && html[p] != '>')
-          p++;
-      }
-
-      while (p < html.length && (html[p] < '0' || html[p] > '9'))
+      // Find a digit or opening tag. We don't care about anything else.
+      while (p < html.length && ((html[p] < '0' || html[p] > '9') && (html[p] != '<')))
         p++;
+
+      // Either at a digit, tag, or past end.
+      // Skip HTML tags
+      if (p < html.length && html[p] == '<') {
+        p = skipTag(html, p);
+
+        // We may have walked right into the next tag, so check again
+        continue;
+      }
 
       if (p < html.length) {
         // We have a digit, make sure we're not in the middle of something
@@ -81,7 +93,8 @@ function processPage() {
                     (html[p] >= 'a' && html[p] <= 'z') ||
                     (html[p] >= 'A' && html[p] <= 'Z') ||
                     html[p] == '<' || // allow for things like mm2 with <sup>
-                    html[p] == '>')) {
+                    html[p] == '>' ||
+                    html[p] == '\u00b0')) {
                   p++;
                 }
                 const suffixOne = html.substring(suffixStart, p);
@@ -91,11 +104,7 @@ function processPage() {
                 // This is very specifically for things like "22 metric tons".
                 if (p < html.length && html[p] == ' ') {
                   p++;
-                  while (p < html.length &&
-                    ((html[p] >= 'a' && html[p] <= 'z') ||
-                      (html[p] >= 'A' && html[p] <= 'Z'))) {
-                    p++;
-                  }
+                  p = skipLetters(html, p);
                 }
                 const suffixTwo = html.substring(suffixStart, p);
                 const suffixTwoEnd = p;
@@ -166,6 +175,7 @@ function processPage() {
   var thothPopupElement = document.createElement('div');
   var popupHtml = '<span id="thoth-original">&nbsp;</span><br />' +
     '<nav class="thoth-all-units-list-nav">' +
+    // TODO
     //'<ul id="thoth-all-units" class="thoth-all-units-nav-ul">' +
     '</ul>' + 
     '</nav>';
@@ -188,4 +198,72 @@ function formatValue(valueInBaseUnits, targetUnit, targetNf, sourceUnit, origina
   return result;
 }
 
+// Note the recursion for nested tags
+function skipTag(html, p) {
+  // Arriving at the opening tag, should return after the closing tag
+  p++;
+  const openTagStart = p;
+  if (html[p] == '!') {
+    // Comment
+    while (p < html.length && html[p] != '>')
+      p++;
+    p++;
+    return p;
+  }
+  p = skipLetters(html, p);
+  const tagName = html.substring(openTagStart, p);
+  log('tagName: %s, p: %d, html: %s', tagName, p, html);
+  // Find end of opening tag, ignoring strings
+  while (p < html.length && html[p] != '>') {
+    if (html[p] == '\'' || html[p] == '"') {
+      const currentQuote = html[p];
+      p++; // Skip past opening quote
+      while (p < html.length && html[p] != currentQuote) {
+        // Ignore things like \'
+        if (html[p] == '\\' && html[p + 1] == currentQuote) {
+          p++; // Skip past \, regular skip will do the quote
+        }
+        p++;
+      }
+    }
+    p++;
+  }
+  p++;
+  if (html[p - 2] == '/') {
+    // Singlular, e.g. <br />; we're done
+    return p;
+  }
+  // Skip past tag content
+  while (p < html.length && (html[p] != '<' || html[p + 1] != '/')) {
+    if (html[p] == '<' && html[p + 1] != '/') {
+      // Oops, not a closing tag, it's a nested tag. So recurse to skip past that
+      p = skipTag(html, p);
+    }
+    else
+      p++;
+  }
+  // We should be pointing at the opening of the closing tag.
+  // If we did everything right, the tags should match. Check anyway.
+  p += 2;  // Skip </
+  const closeTagStart = p;
+  p = skipLetters(html, p);
+  const closeTag = html.substring(closeTagStart, p);
+  if (closeTag != tagName) {
+    log('Tag mismatch, we\'ve got a bug! Open tag is ' + tagName + ', close tag is ' + closeTag + 
+    ', content is ' + html.substring(openTagStart, p));
+  }
+  // Skip past closing >
+  p++;
+  return p;
+}
 
+function skipLetters(html, p) {
+  while (p < html.length && ((html[p] >= 'a' && html[p] <= 'z') || (html[p] >= 'A' && html[p] <= 'Z'))) {
+    p++;
+  }
+  return p;
+}
+
+function log(...args) {
+  console.log(...args);
+}

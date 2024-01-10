@@ -2,35 +2,50 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
-    <title>Thoth options</title>
-    <!-- I cannot believe I have to do this. 100 versions in, and Google still can't be bothered to
-         apply a sane default style? Absolutely pitiful. -->
-    <style>
-      body {
-        font-family: "Segoe UI", Helvetica, sans-serif;
-        font-size: 10pt;
-        margin: 25px;
-      }
-      select {
-        font-family: "Segoe UI", Helvetica, sans-serif;
-        font-size: 10pt;
-        margin-bottom: 15px;
-      }
-      input {
-        vertical-align: baseline;
-        margin-bottom: 15px;
-        margin-left: 0px;
-      }
-      button {
-        font-family: "Segoe UI", Helvetica, sans-serif;
-        font-size: 10pt;
-        margin: 5px 5px 20px 20px;
-        padding: 5px 20px 5px 20px;
-      }
-    </style>
+  <meta charset="utf-8" />
+  <title>Thoth options</title>
+  <!-- I cannot believe I have to do this. 100 versions in, and Google still can't be bothered to
+       apply a sane default style? Absolutely pitiful. -->
+  <!-- do not set body to display:flex or Chrome has a complete and utter aneurysm  -->
+  <style>
+    body {
+      font-family: "Segoe UI", Helvetica, sans-serif;
+      font-size: 10pt;
+      margin: 25px;
+      min-width: 600px;
+    }
+
+    select {
+      font-family: "Segoe UI", Helvetica, sans-serif;
+      font-size: 10pt;
+      margin-bottom: 15px;
+    }
+
+    input {
+      margin-bottom: 15px;
+      margin-left: 0px;
+    }
+
+    button {
+      font-family: "Segoe UI", Helvetica, sans-serif;
+      font-size: 10pt;
+      margin: 5px 5px 20px 20px;
+      padding: 5px 20px 5px 20px;
+    }
+
+    .hdr {
+      font-size: 8pt;
+    }
+  </style>
 </head>
 <body>
+  <div class="hdr">
+    <span>© 2023-2024 by Sjoerd Verweij</span><br />
+    <span>Thoth came from https://github.com/sjoerdverweij/Thoth -- accept no substitutes.</span><br />
+    <span>This extension is open source. Steal all you want, but not without giving credit.</span><br />
+  </div>
+
+  <br />
   Assume ambiguous units on the page are
   <select id="assumeImperial">
     <option value="true">Imperial</option>
@@ -43,16 +58,17 @@
     <option value="false">Metric</option>
   </select>
   <br />
-  <input id="addOtherSystem" type="checkbox" />Add other unit system (in parentheses)
+  <input id="addOtherSystem" type="checkbox" />&nbsp;Add other unit system (in parentheses)
   <br />
-  <input id="highlight" type="checkbox" />Highlight substituted values
+  <input id="highlight" type="checkbox" />&nbsp;Highlight substituted values
   <br />
-  <input id="showPopup" type="checkbox" />Show tooltip
+  <input id="showPopup" type="checkbox" />&nbsp;Show tooltip
   <br />
 
   <div id="status">&nbsp;</div>
   <div style="float: right"><button id="save">Save</button></div>
 
   <script src="options.js"></script>
+
 </body>
 </html>
