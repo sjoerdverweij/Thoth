@@ -99,7 +99,11 @@ function processPage() {
                     (html[p] >= 'A' && html[p] <= 'Z') ||
                     html[p] == '<' || // allow for things like mm2 with <sup>
                     html[p] == '>' ||
-                    html[p] == '\\')) {
+                    html[p] == '\\' ||
+                    html[p] == '&' ||
+                    html[p] == '#' ||
+                    html[p] == ';' ||
+                    html[p] == '\u00B0')) {
                   p++;
                 }
                 const suffixOne = html.substring(suffixStart, p);
