@@ -64,7 +64,13 @@ function processPage() {
       if (p < html.length) {
         // We have a digit, make sure we're not in the middle of something
         if (p == 0 || !((html[p - 1] >= 'A' && html[p - 1] <= 'Z') || (html[p - 1] >= 'a' && html[p - 1] <= 'z'))) {
-          const replaceStart = p;
+          var replaceStart = p;
+          // Grab a minus if it's there for negative values
+          if (p > 0 && html[p - 1] == '-')
+          {
+            replaceStart--;
+          }
+
           while (p < html.length && ((html[p] >= '0' && html[p] <= '9') || html[p] == '.' || html[p] == ',')) {
             p++;
           }
