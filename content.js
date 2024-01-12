@@ -1,5 +1,4 @@
 // TODO: add target decimal locale
-// TODO: minify
 
 var units = null;
 var assumeImperial = true; // might have to look at headers to make this saner
@@ -94,7 +93,7 @@ function processPage() {
                     (html[p] >= 'A' && html[p] <= 'Z') ||
                     html[p] == '<' || // allow for things like mm2 with <sup>
                     html[p] == '>' ||
-                    html[p] == '\u00b0')) {
+                    html[p] == '\\')) {
                   p++;
                 }
                 const suffixOne = html.substring(suffixStart, p);
@@ -109,15 +108,22 @@ function processPage() {
                 const suffixTwo = html.substring(suffixStart, p);
                 const suffixTwoEnd = p;
 
-                // TODO: eat any conversions the source gives us "1lb (907g)"
-                // END TODO
-
                 if (suffixOne.length > 0) {
                   var sourceUnit = units[suffixTwo];
                   var replaceEnd = suffixTwoEnd;
                   if (!sourceUnit) {
                     sourceUnit = units[suffixOne];
                     replaceEnd = suffixOneEnd;
+                  }
+
+                  // Eat any conversions the source gives us "2lb (907g)"
+                  // If we're on a space, followed by a paren, followed by a digit, skip all the way to the closing paren
+                  if (p < html.length - 2 && html[p - 1] == ' ' && html[p] == '(' && (html[p + 1] >= '0' && html[p + 1] <= '9')) {
+                    p += 2;
+                    while (p < html.length && html[p] != ')')
+                      p++;
+                    p++;
+                    replaceEnd = p;
                   }
 
                   if (sourceUnit) {
