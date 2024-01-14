@@ -17,6 +17,7 @@ const readOptionsFromStorage = chrome.storage.local.get()
     highlight = items.highlight;
     showPopup = items.showPopup;
     units = items.units;
+    aliases = items.aliases;
     processPage();
   }
 );
@@ -119,12 +120,17 @@ function processPage() {
                 const suffixTwoEnd = p;
 
                 if (suffixOne.length > 0) {
-                  var sourceUnit = units[suffixTwo];
+                  var sourceAlias = aliases[suffixTwo];
                   var replaceEnd = suffixTwoEnd;
-                  if (!sourceUnit) {
-                    sourceUnit = units[suffixOne];
+                  if (!sourceAlias) {
+                    sourceAlias = aliases[suffixOne];
                     replaceEnd = suffixOneEnd;
                   }
+
+                  if (!sourceAlias)
+                    continue;
+                  const sourceUnit = units[sourceAlias.a];
+
 
                   // Eat any conversions the source gives us "2lb (907g)"
                   // If we're on a space, followed by a paren, followed by a digit, skip all the way to the closing paren
