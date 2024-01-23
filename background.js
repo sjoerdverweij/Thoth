@@ -1,8 +1,7 @@
 var _items = null;
 
-// text match, class, name, pref suffix, convert to baseline add before, conv to baseline factor, convert to baseline add after, pref imp high, cutoff imp, pref imp low,
-// pref metric high, cutoff metric, pref metric low, high dec, cutoff dec, low dec, number format culture
 chrome.runtime.onInstalled.addListener(
+  // eslint-disable-next-line no-unused-vars
   function (details) {
     // TODO: when set is complete, consider checking details.reason === "update"
     chrome.storage.local.set(
@@ -14,6 +13,8 @@ chrome.runtime.onInstalled.addListener(
         showPopup: true,
         // NOTE: order is important!
         units: {
+          // text match, class, name, pref suffix, convert to baseline add before, conv to baseline factor, convert to baseline add after, pref imp high, cutoff imp, pref imp low,
+          // pref metric high, cutoff metric, pref metric low, high dec, cutoff dec, low dec, number format culture
           'g': { c: 'Mass', n: 'Gram', ps: 'g', ctbb: 0, ctb: 1.0, ctba: 0, pih: 'oz', coi: 0, pil: 'oz', pmh: 'g', com: 0, pml: 'g', hd: 0, cod: 10, ld: 1, nf: 'nl-NL' },
           'oz': { c: 'Mass', n: 'Ounce', ps: 'oz', ctbb: 0, ctb: 1.0 / 28.3495, ctba: 0, pih: 'oz', coi: 0, pil: 'oz', pmh: 'g', com: 0, pml: 'g', hd: 0, cod: 10, ld: 1, nf: 'en-US' },
           'kg': { c: 'Mass', n: 'Kilogram', ps: 'kg', ctbb: 0, ctb: 0.001, ctba: 0, pih: 'lb', coi: 0, pil: 'lb', pmh: 'kg', com: 0, pml: 'kg', hd: 0, cod: 10, ld: 1, nf: 'nl-NL' },
@@ -26,7 +27,7 @@ chrome.runtime.onInstalled.addListener(
           'K': { c: 'Temperature', n: 'Kelvin', ps: '\u00b0K', ctbb: 273.15, ctb: 1.0, ctba: 0, pih: 'F', coi: 0, pil: 'F', pmh: 'C', com: -100, pml: 'K', hd: 0, cod: 100, ld: 1, nf: 'nl-NL' },
           'F': { c: 'Temperature', n: 'Fahrenheit', ps: '\u00b0F', ctbb: 0, ctb: 9.0 / 5.0, ctba: 32.0, pih: 'F', coi: 0, pil: 'F', pmh: 'C', com: -100, pml: 'K', hd: 0, cod: 100, ld: 1, nf: 'en-US' },
           'R': { c: 'Temperature', n: 'Rankine', ps: '\u00b0R', ctbb: 0, ctb: 9.0 / 5.0, ctba: 491.67, pih: 'R', coi: 0, pil: 'R', pmh: 'C', com: 0, pml: 'K', hd: 0, cod: 100, ld: 1, nf: 'en-US' }
-          },
+        },
         aliases: {
           'g': { a: 'g' },
           'gram': { a: 'g' },
@@ -55,7 +56,7 @@ chrome.runtime.onInstalled.addListener(
           '&#xb0;C': { a: 'C' },
           '&#xb0; C': { a: 'C' },
           'Celsius': { a: 'C' },
-          '\u00B0C': { a: 'C' },
+          '\u00B0Celsius': { a: 'C' },
           '\u00B0 Celsius': { a: 'C' },
           '&#176;Celsius': { a: 'C' },
           '&#176; Celsius': { a: 'C' },
@@ -128,7 +129,7 @@ chrome.runtime.onStartup.addListener(
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (!_items) { loadSettings(); }
-    if (request.thoth === "getUnits")
+    if (request.thoth === 'getUnits')
       sendResponse(_items);
   }
 );
