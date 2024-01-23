@@ -1,5 +1,17 @@
 // TODO: add target decimal locale
 
+// TODO move reload when settings change
+//  chrome.storage.local.onChanged.addListener(function (changes, area) {
+//    location.reload();
+//  });
+//}
+
+// TODO: special-case for 2'3" or 2m10cm input, special-case output for 13"-~20'
+
+// TODO: consider fractions (in/out for sub-in imp?)
+
+// TODO: will probably have to cascade (loop) ranges, mm->m->km etc.
+
 var aliases = null;
 var units = null;
 var assumeImperial = true; // might have to look at headers to make this saner
@@ -9,7 +21,8 @@ var highlight = true;
 var showPopup = true;
 
 (async () => {
-  const response = await chrome.runtime.sendMessage({thoth: "getUnits"});
+  const response = await chrome.runtime.sendMessage({ thoth: 'getUnits' });
+  // TODO should never happen anymore, kill this check
   if (!response)
   {
     window.alert('DBG, reload');
@@ -27,12 +40,6 @@ var showPopup = true;
   }
 })();
 
-
-// TODO move reload
-//  chrome.storage.local.onChanged.addListener(function (changes, area) {
-//    location.reload();
-//  });
-//}
 
 // This is where the magic happens.
 // NOTE: This is very, very intentionally written as a dopey one-way state loop, rather than using regular expressions.
@@ -90,7 +97,7 @@ function processPage() {
                 var suffixStart = p;
 
                 // Some do "1250kg"; some do "1250 kg"; some do "1250-kg" (for some reason)
-                if (html[p] == " " || html[p] == "-") {
+                if (html[p] == ' ' || html[p] == '-') {
                   suffixStart++;
                   p++;
                 }
@@ -152,14 +159,18 @@ function processPage() {
                     } else {
                       valueString = valueString.replace(',', '');
                     }
+
                     const decimalPointPos = valueString.lastIndexOf('.');
                     const originalFractionDigits = decimalPointPos < 0 ? 0 : valueString.length - decimalPointPos - 1;
+
+                    // These few lines are the actual, actual conversion. Everything else is just to get us here!
                     const valueInBaseUnits = (1.0 * parseFloat(valueString) - sourceUnit.ctba) / sourceUnit.ctb - sourceUnit.ctbb;
                     const imperialUnit = valueInBaseUnits >= sourceUnit.coi ? units[sourceUnit.pih] : units[sourceUnit.pil];
                     const metricUnit = valueInBaseUnits >= sourceUnit.com ? units[sourceUnit.pmh] : units[sourceUnit.pml];
                     const targetNf = toImperial ? imperialUnit.nf : metricUnit.nf;
                     const imperialResult = formatValue(valueInBaseUnits, imperialUnit, targetNf, sourceUnit, originalFractionDigits);
                     const metricResult = formatValue(valueInBaseUnits, metricUnit, targetNf, sourceUnit, originalFractionDigits);
+                    // ...and that's it. Easy, right?
 
                     var replacement = toImperial ? imperialResult : metricResult;
                     if (addOtherSystem)
@@ -234,7 +245,7 @@ function skipTag(html, p) {
   const openTagStart = p;
   if (html[p] == '!') {
     // Comment
-    while (p < html.length && html[p] != '>')
+    while (p < html.length && p > 2 && (html[p - 2] != '-' || html[p - 1] != '-' || html[p] != '>'))
       p++;
     p++;
     return p;
