@@ -3,7 +3,7 @@ async function showThothPopup(event, thothSpan, originalString, className, value
   const thothPopupElement = document.getElementById('thoth-popup');
   const thothSpanClientRect = thothSpan.getBoundingClientRect();
   const originalElement = document.getElementById('thoth-original');
-  originalElement.innerHTML = '"' + originalString + '"';
+  originalElement.innerHTML = 'Original value: "' + originalString + '"';
   // TODO
   // const thothList = document.getElementById('thoth-all-units');
   // thothList.innerHTML = '<ul>test</ul>';

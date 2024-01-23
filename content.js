@@ -1,5 +1,6 @@
 // TODO: add target decimal locale
 
+var aliases = null;
 var units = null;
 var assumeImperial = true; // might have to look at headers to make this saner
 var toImperial = true; 
@@ -7,29 +8,31 @@ var addOtherSystem = true;
 var highlight = true;
 var showPopup = true;
 
-// This is the only way I've figured out to synchronously load settings. It's clinically insane.
-// I am very much open to better alternatives.
-const readOptionsFromStorage = chrome.storage.local.get()
-  .then((items) => {
-    assumeImperial = items.assumeImperial;
-    toImperial = items.toImperial;
-    addOtherSystem = items.addOtherSystem;
-    highlight = items.highlight;
-    showPopup = items.showPopup;
-    units = items.units;
-    aliases = items.aliases;
+(async () => {
+  const response = await chrome.runtime.sendMessage({thoth: "getUnits"});
+  if (!response)
+  {
+    window.alert('DBG, reload');
+  }
+  else
+  {
+    aliases = response.aliases;
+    units = response.units;
+    assumeImperial = response.assumeImperial;
+    toImperial = response.toImperial;
+    addOtherSystem = response.addOtherSystem;
+    highlight = response.highlight;
+    showPopup = response.showPopup;
     processPage();
   }
-);
+})();
 
-loadOptions();
 
-async function loadOptions() {
-  await readOptionsFromStorage;
-  chrome.storage.local.onChanged.addListener(function (changes, area) {
-    location.reload();
-  });
-}
+// TODO move reload
+//  chrome.storage.local.onChanged.addListener(function (changes, area) {
+//    location.reload();
+//  });
+//}
 
 // This is where the magic happens.
 // NOTE: This is very, very intentionally written as a dopey one-way state loop, rather than using regular expressions.
@@ -211,6 +214,7 @@ function processPage() {
 
   document.documentElement.setAttribute('onclick', 'hideThothPopup();' + (document.documentElement.getAttribute('onclick') || ''));
 }
+
 
 function formatValue(valueInBaseUnits, targetUnit, targetNf, sourceUnit, originalFractionDigits) {
   const value = (1.0 * valueInBaseUnits + targetUnit.ctbb) * targetUnit.ctb + targetUnit.ctba;
